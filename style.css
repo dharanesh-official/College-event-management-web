@@ -1,0 +1,17 @@
+.event-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+input, textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+}
+
+.event-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+}

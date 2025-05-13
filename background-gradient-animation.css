@@ -1,0 +1,158 @@
+/* Background Gradient Animation CSS */
+:root {
+  --gradient-background-start: rgb(107, 33, 168);
+  --gradient-background-end: rgb(67, 56, 202);
+  --first-color: 147, 51, 234;
+  --second-color: 192, 132, 252;
+  --third-color: 139, 92, 246;
+  --fourth-color: 79, 70, 229;
+  --fifth-color: 124, 58, 237;
+  --pointer-color: 216, 180, 254;
+  --size: 80%;
+  --blending-value: hard-light;
+}
+
+.gradient-bg-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: linear-gradient(40deg, var(--gradient-background-start), var(--gradient-background-end));
+  z-index: -1;
+}
+
+.gradients-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  filter: blur(40px);
+}
+
+.gradient-circle {
+  position: absolute;
+  mix-blend-mode: var(--blending-value);
+  width: var(--size);
+  height: var(--size);
+  top: calc(50% - var(--size) / 2);
+  left: calc(50% - var(--size) / 2);
+  opacity: 100;
+}
+
+.first-circle {
+  background: radial-gradient(circle at center, rgba(var(--first-color), 1) 0, rgba(var(--first-color), 0) 50%) no-repeat;
+  transform-origin: center center;
+  animation: first-animation 8s infinite;
+}
+
+.second-circle {
+  background: radial-gradient(circle at center, rgba(var(--second-color), 0.8) 0, rgba(var(--second-color), 0) 50%) no-repeat;
+  transform-origin: calc(50% - 400px);
+  animation: second-animation 8s infinite;
+}
+
+.third-circle {
+  background: radial-gradient(circle at center, rgba(var(--third-color), 0.8) 0, rgba(var(--third-color), 0) 50%) no-repeat;
+  transform-origin: calc(50% + 400px);
+  animation: third-animation 8s infinite;
+}
+
+.fourth-circle {
+  background: radial-gradient(circle at center, rgba(var(--fourth-color), 0.8) 0, rgba(var(--fourth-color), 0) 50%) no-repeat;
+  transform-origin: calc(50% - 200px);
+  animation: fourth-animation 8s infinite;
+  opacity: 70%;
+}
+
+.fifth-circle {
+  background: radial-gradient(circle at center, rgba(var(--fifth-color), 0.8) 0, rgba(var(--fifth-color), 0) 50%) no-repeat;
+  transform-origin: calc(50% - 800px) calc(50% + 800px);
+  animation: fifth-animation 8s infinite;
+}
+
+.pointer-circle {
+  background: radial-gradient(circle at center, rgba(var(--pointer-color), 0.8) 0, rgba(var(--pointer-color), 0) 50%) no-repeat;
+  mix-blend-mode: var(--blending-value);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  opacity: 70%;
+}
+
+@keyframes first-animation {
+  0% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  33% {
+    transform: translate(-20%, -10%) scale(1.2);
+  }
+  66% {
+    transform: translate(20%, 10%) scale(0.8);
+  }
+  100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+}
+
+@keyframes second-animation {
+  0% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  33% {
+    transform: translate(20%, 10%) scale(1.2);
+  }
+  66% {
+    transform: translate(-20%, -10%) scale(0.8);
+  }
+  100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+}
+
+@keyframes third-animation {
+  0% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  33% {
+    transform: translate(-10%, 20%) scale(1.2);
+  }
+  66% {
+    transform: translate(10%, -20%) scale(0.8);
+  }
+  100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+}
+
+@keyframes fourth-animation {
+  0% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  33% {
+    transform: translate(10%, -20%) scale(1.2);
+  }
+  66% {
+    transform: translate(-10%, 20%) scale(0.8);
+  }
+  100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+}
+
+@keyframes fifth-animation {
+  0% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  33% {
+    transform: translate(-5%, -15%) scale(1.2);
+  }
+  66% {
+    transform: translate(5%, 15%) scale(0.8);
+  }
+  100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+}

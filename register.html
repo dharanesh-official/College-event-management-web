@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registration - Mescia 2K25</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    .floating-label input:focus + label,
+    .floating-label input:not(:placeholder-shown) + label {
+      transform: translateY(-1.5rem) scale(0.85);
+      color: #818cf8;
+    }
+    #paymentSection {
+      display: none;
+    }
+    #qrCode {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px auto;
+      width: 200px;
+      height: 200px;
+    }
+    #countdown {
+      font-size: 1.2rem;
+      color: #f87171;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .food-option {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .accommodation-option {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+  </style>
+</head>
+<body class="bg-black text-white font-sans">
+
+  <!-- Hero Section -->
+  <section class="relative h-[75vh] flex flex-col justify-center items-center bg-gradient-to-b from-indigo-900 to-black text-center">
+    <a href="main.html" class="absolute top-4 left-4 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-xl transition">
+      Back to Homepage
+    </a>
+    <h1 class="text-5xl md:text-7xl font-bold mb-4">Mescia 2K25 Registration</h1>
+    <p class="text-xl md:text-2xl text-gray-300">Register Now for the Annual Tech Fest</p>
+  </section>
+
+  <!-- Registration Form -->
+  <section id="registration" class="py-12 md:py-16 bg-gray-900 text-gray-200">
+    <div class="max-w-7xl mx-auto px-6 md:px-10">
+      <h2 class="text-4xl font-bold text-center mb-8">Event Registration</h2>
+      
+      <div class="flex flex-col items-center mb-8">
+        <label for="members" class="text-xl font-semibold mb-2">Number of Members</label>
+        <input id="members" type="number" min="1" max="10" placeholder="Enter number of members" class="w-64 p-3 text-gray-800 rounded-lg" onchange="generateFields()" />
+      </div>
+
+      <form id="registrationForm" onsubmit="return validateForm(event)">
+        <div id="memberForm" class="space-y-12"></div>
+
+        <div class="flex justify-center mt-8">
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-800 text-white font-semibold px-8 py-3 rounded-xl transition-all">Proceed to Payment</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Payment Section -->
+  <section id="paymentSection" class="py-12 md:py-16 bg-gray-800 text-gray-200">
+    <div class="max-w-7xl mx-auto px-6 md:px-10 text-center">
+      <h2 class="text-4xl font-bold mb-8">Payment Details</h2>
+      
+      <div class="bg-indigo-900/30 rounded-xl p-6 max-w-md mx-auto">
+        <p class="text-xl mb-2">Total Members: <span id="totalMembers" class="font-bold">0</span></p>
+        <p class="text-xl mb-4">Amount to Pay: ₹<span id="totalAmount" class="font-bold">0</span></p>
+        
+        <p class="text-lg mb-4">Scan the QR code below to complete your payment</p>
+        
+        <div id="qrCode"></div>
+        
+        <div id="countdown">Time remaining: 04:00</div>
+        
+        <button onclick="completeRegistration()" class="mt-6 bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-xl transition-all">
+          I've Completed Payment
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 bg-indigo-900 text-center text-gray-300">
+    <p>&copy; 2025 Mescia. All rights reserved.</p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    // Constants
+    const PRICE_PER_PERSON = 200;
+    const PAYMENT_TIMEOUT = 4 * 60; // 4 minutes in seconds
+    let currentMemberCount = 0;
+    let countdownInterval;
+    let timeLeft = PAYMENT_TIMEOUT;
+
+    function createFloatingInput(type, name, label, pattern = '', title = '', extra = '') {
+      return `
+        <div class="relative floating-label">
+          <input type="${type}" name="${name}" placeholder=" " class="peer w-64 p-3 text-gray-800 rounded-lg focus:outline-none" ${pattern && `pattern="${pattern}"`} ${title && `title="${title}"`} ${extra} required />
+          <label class="absolute left-3 top-3 text-gray-500 transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base peer-focus:top-1 peer-focus:text-sm">${label}</label>
+        </div>
+      `;
+    }
+
+    function generateFields() {
+      const members = parseInt(document.getElementById("members").value);
+      const memberForm = document.getElementById("memberForm");
+      memberForm.innerHTML = '';
+      currentMemberCount = members;
+
+      if (members > 10) {
+        alert("Maximum 10 members allowed per registration");
+        document.getElementById("members").value = 10;
+        generateFields();
+        return;
+      }
+
+      for (let i = 1; i <= members; i++) {
+        const memberDiv = document.createElement("div");
+        memberDiv.classList.add("flex", "flex-col", "space-y-4", "border", "border-indigo-700", "p-6", "rounded-lg");
+        memberDiv.innerHTML = `
+          <h3 class="text-2xl font-bold text-center text-indigo-200">Member ${i}</h3>
+          ${createFloatingInput('text', 'name' + i, 'Name', '[A-Za-z\\s]+', 'Only letters and spaces allowed')}
+          ${createFloatingInput('text', 'college' + i, 'College Name', '[A-Za-z\\s]+', 'Only letters and spaces allowed')}
+          ${createFloatingInput('text', 'phone' + i, 'Phone Number', '\\d{10}', 'Only 10 digits allowed', 'maxlength="10"')}
+          ${createFloatingInput('email', 'email' + i, 'Email Address')}
+
+          <div class="mt-4">
+            <label class="text-xl font-semibold mb-2">Food Preference</label>
+            <div class="food-option">
+              <label class="inline-flex items-center">
+                <input type="radio" name="food${i}" value="veg" class="mr-2" checked required />
+                Vegetarian
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="food${i}" value="non-veg" class="mr-2" required />
+                Non-Vegetarian
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <label class="text-xl font-semibold mb-2">Need Accommodation?</label>
+            <div class="accommodation-option">
+              <label class="inline-flex items-center">
+                <input type="radio" name="accommodation${i}" value="yes" class="mr-2" required />
+                Yes
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="accommodation${i}" value="no" class="mr-2" checked required />
+                No
+              </label>
+            </div>
+          </div>
+
+          <label class="text-xl font-semibold mb-2 mt-4">Select Events (min. 4)</label>
+          <div class="space-y-2 grid grid-cols-2 md:grid-cols-3 gap-2 event-section">
+            <label class="inline-flex items-center"><input type="checkbox" class="event-checkbox mr-2" value="present-o-vation"/>Present-o-Vation</label>
+            <label class="inline-flex items-center"><input type="checkbox" class="event-checkbox mr-2" value="proto-show"/>Proto Show</label>
+            <label class="inline-flex items-center"><input type="checkbox" class="event-checkbox mr-2" value="idea-storm"/>Idea Storm</label>
+            <label class="inline-flex items-center"><input type="checkbox" class="event-checkbox mr-2" value="code-rush"/>Code Rush</label>
+            <label class="inline-flex items-center"><input type="checkbox" class="event-checkbox mr-2" value="sound-sphere"/>Sound Sphere</label>
+            <label class="inline-flex items-center"><input type="checkbox" class="event-checkbox mr-2" value="iconify"/>Iconify</label>
+            <label class="inline-flex items-center"><input type="checkbox" class="event-checkbox mr-2" value="reelcraft"/>Reelcraft</label>
+            <label class="inline-flex items-center"><input type="checkbox" class="event-checkbox mr-2" value="mememakers"/>Mememakers</label>
+          </div>
+        `;
+        memberForm.appendChild(memberDiv);
+      }
+    }
+
+    function validateForm(event) {
+      event.preventDefault();
+      const form = document.getElementById("registrationForm");
+
+      // Validate checkboxes for each member
+      const memberSections = document.querySelectorAll('#memberForm > div');
+      for (let i = 0; i < memberSections.length; i++) {
+        const checkboxes = memberSections[i].querySelectorAll('input[type="checkbox"]:checked');
+        if (checkboxes.length < 4) {
+          alert(`Please select at least 4 events for Member ${i + 1}`);
+          return false;
+        }
+      }
+
+      // Validate required inputs
+      if (form.reportValidity()) {
+        showPaymentSection();
+      }
+    }
+
+    function startCountdown() {
+      timeLeft = PAYMENT_TIMEOUT;
+      updateCountdownDisplay();
+      
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        timeLeft--;
+        updateCountdownDisplay();
+        
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          paymentTimeout();
+        }
+      }, 1000);
+    }
+
+    function updateCountdownDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('countdown').textContent = 
+        `Time remaining: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function paymentTimeout() {
+      alert("Payment time has expired. Please start your registration again.");
+      resetForm();
+    }
+
+    function showPaymentSection() {
+      // Calculate total amount
+      const totalAmount = currentMemberCount * PRICE_PER_PERSON;
+      
+      // Update payment section
+      document.getElementById('totalMembers').textContent = currentMemberCount;
+      document.getElementById('totalAmount').textContent = totalAmount;
+      
+      // Generate QR code with payment details
+      const qrText = `Mescia 2K25 Registration\nTotal Members: ${currentMemberCount}\nTotal Amount: ₹${totalAmount}`;
+      const qrCodeElement = document.getElementById('qrCode');
+      
+      // Clear previous QR code if any
+      qrCodeElement.innerHTML = '';
+      
+      // Generate new QR code
+      QRCode.toCanvas(qrText, {
+        width: 200,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        }
+      }, function(error, canvas) {
+        if (error) {
+          console.error(error);
+          qrCodeElement.innerHTML = '<p class="text-red-500">Error generating QR code</p>';
+        } else {
+          qrCodeElement.appendChild(canvas);
+        }
+      });
+      
+      // Show payment section and hide form
+      document.getElementById('registration').style.display = 'none';
+      document.getElementById('paymentSection').style.display = 'block';
+      
+      // Start countdown timer
+      startCountdown();
+      
+      // Scroll to payment section
+      document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function completeRegistration() {
+      clearInterval(countdownInterval);
+      
+      // Collect all registration data
+      const registrationData = [];
+      const memberSections = document.querySelectorAll('#memberForm > div');
+      
+      memberSections.forEach((section, index) => {
+        const memberNumber = index + 1;
+        const memberData = {
+          name: document.querySelector(`input[name="name${memberNumber}"]`).value,
+          college: document.querySelector(`input[name="college${memberNumber}"]`).value,
+          phone: document.querySelector(`input[name="phone${memberNumber}"]`).value,
+          email: document.querySelector(`input[name="email${memberNumber}"]`).value,
+          foodPreference: document.querySelector(`input[name="food${memberNumber}"]:checked`).value,
+          needsAccommodation: document.querySelector(`input[name="accommodation${memberNumber}"]:checked`).value,
+          events: Array.from(section.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value)
+        };
+        registrationData.push(memberData);
+      });
+      
+      // Here you would typically send this data to your backend
+      console.log("Registration data:", registrationData);
+      
+      alert("Payment successful! Your registration is complete.");
+      resetForm();
+    }
+
+    function resetForm() {
+      // Reset form
+      document.getElementById("registrationForm").reset();
+      document.getElementById("memberForm").innerHTML = '';
+      document.getElementById("members").value = '';
+      
+      // Hide payment section and show form again
+      document.getElementById('paymentSection').style.display = 'none';
+      document.getElementById('registration').style.display = 'block';
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>

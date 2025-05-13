@@ -1,0 +1,15 @@
+[
+{
+"title": "Present-O-Vation",
+"image": "paperp.png",
+"description": "A technical paper presentation to showcase research and innovation.",
+"type": "technical"
+},
+{
+"title": "SoundSphere",
+"image": "musicfest.png",
+"description": "Show off your musical talent and battle it out with the best.",
+"type": "non-technical"
+}
+]
+    

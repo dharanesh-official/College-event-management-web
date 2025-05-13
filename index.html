@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mescia 2K25</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="background-gradient-animation.css" rel="stylesheet">
+  <style>
+    .blast {
+      animation: blastAnimation 0.6s ease-out forwards;
+    }
+
+    @keyframes blastAnimation {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+      }
+      50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+        box-shadow: 0 0 50px rgba(255, 255, 255, 0.8);
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
+        box-shadow: 0 0 100px rgba(255, 255, 255, 1);
+      }
+    }
+
+    .neon-button {
+      position: relative;
+      z-index: 1;
+      color: black;
+      background-color: white;
+      border-radius: 9999px;
+      padding: 1rem 2rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      transition: transform 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .neon-button::before {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      background: linear-gradient(45deg, #c084fc, #9333ea, #6b21a8);
+      z-index: -1;
+      filter: blur(4px);
+      opacity: 0;
+      border-radius: 9999px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .neon-button:hover::before {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .neon-button:hover {
+      transform: scale(1.1);
+      color: white;
+      background-color: #6b21a8;
+    }
+
+    .fade-out {
+      animation: fadeOutAnimation 1s forwards;
+    }
+
+    @keyframes fadeOutAnimation {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Background Gradient Animation -->
+  <div class="gradient-bg-container">
+    <div class="gradients-container">
+      <div class="gradient-circle first-circle"></div>
+      <div class="gradient-circle second-circle"></div>
+      <div class="gradient-circle third-circle"></div>
+      <div class="gradient-circle fourth-circle"></div>
+      <div class="gradient-circle fifth-circle"></div>
+      <div class="pointer-circle"></div>
+    </div>
+  </div>
+
+  <div class="flex flex-col items-center justify-center min-h-screen text-white z-10 relative p-6">
+    <img src="paperp.png" alt="Event Logo" class="w-32 h-32 mb-6 rounded-full shadow-lg" />
+    <h1 class="text-5xl font-bold mb-4">Welcome to Mescia 2K25</h1>
+    <p class="text-xl mb-8 text-center max-w-md">Get ready for the biggest event of the year – full of innovation, inspiration, and excitement!</p>
+    <button id="enterButton" class="neon-button">
+      Explore Now!!
+    </button>
+  </div>
+
+  <script>
+    const button = document.getElementById('enterButton');
+    button.addEventListener('click', () => {
+      button.classList.add('blast');
+      document.body.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = "main.html";
+      }, 1000); // wait for fade-out animation to finish
+    });
+  </script>
+  <script src="background-gradient-animation.js"></script>
+  <div class="fixed top-5 right-6 z-50">
+    <button id="loginModalOpen" class="bg-white/10 hover:bg-white/20 rounded-full p-3 shadow-lg border border-indigo-700/40 transition flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-indigo-400">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0v.75a.75.75 0 01-.75.75h-13.5a.75.75 0 01-.75-.75v-.75z" />
+      </svg>
+    </button>
+  </div>
+  <!-- Login Modal -->
+  <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+    <div class="bg-gradient-to-br from-indigo-900 via-gray-900 to-black rounded-2xl shadow-2xl p-8 w-full max-w-sm relative">
+      <button id="loginModalClose" class="absolute top-3 right-4 text-2xl text-gray-400 hover:text-indigo-400 font-bold">&times;</button>
+      <h2 class="text-2xl font-bold text-center text-indigo-300 mb-6">Event Head Login</h2>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label for="userId" class="block text-indigo-200 mb-1">User ID</label>
+          <input type="text" id="userId" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" required>
+        </div>
+        <div>
+          <label for="password" class="block text-indigo-200 mb-1">Password</label>
+          <input type="password" id="password" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white border border-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" required>
+        </div>
+        <div id="loginError" class="hidden text-red-400 bg-red-900/40 rounded px-3 py-2 text-center text-sm font-semibold"></div>
+        <button type="submit" class="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN = {userId: 'admin', password: 'admin123'};
+    const openBtn = document.getElementById('loginModalOpen');
+    const closeBtn = document.getElementById('loginModalClose');
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    if (openBtn) openBtn.addEventListener('click', () => {
+      document.getElementById('loginModal').classList.remove('hidden');
+      if (loginError) loginError.classList.add('hidden');
+    });
+    if (closeBtn) closeBtn.addEventListener('click', () => {
+      document.getElementById('loginModal').classList.add('hidden');
+      if (loginError) loginError.classList.add('hidden');
+    });
+    if (loginForm) loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const uid = document.getElementById('userId').value;
+      const pwd = document.getElementById('password').value;
+      if (uid === ADMIN.userId && pwd === ADMIN.password) {
+        document.getElementById('loginModal').classList.add('hidden');
+        window.location.href = 'addevent.html';
+      } else if (loginError) {
+        loginError.textContent = 'Invalid User ID or Password!';
+        loginError.classList.remove('hidden');
+      }
+    });
+  </script>
+  <script>
+    window.addEventListener('pageshow', function(event) {
+      var navEntries = performance.getEntriesByType('navigation');
+      var navType = navEntries.length && navEntries[0].type;
+      if (event.persisted || navType === 'back_forward') {
+        window.location.reload();
+      }
+    });
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html>

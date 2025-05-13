@@ -1,0 +1,87 @@
+<!-- Input Fields -->
+<input id="eventName" type="text" placeholder="Event Name">
+<input id="eventImage" type="text" placeholder="Image URL">
+<input id="eventDescription" type="text" placeholder="Event Description">
+<input id="eventRules" type="text" placeholder="Event Rules">
+
+<br><br>
+
+<!-- Buttons -->
+<button onclick="saveEvent()">Save Event</button>
+<button onclick="deleteEvent()" style="background-color: red; color: white;">Delete Event</button>
+
+<br><br>
+
+<!-- Preview All Events Here -->
+<div id="eventsContainer" style="display: flex; flex-wrap: wrap; gap: 20px;"></div>
+
+<script>
+// Save Event Function
+function saveEvent() {
+  const name = document.getElementById("eventName").value;
+  const image = document.getElementById("eventImage").value;
+  const description = document.getElementById("eventDescription").value;
+  const rules = document.getElementById("eventRules").value;
+
+  if (name && image && description && rules) {
+    const event = { name, image, description, rules };
+    let events = JSON.parse(localStorage.getItem("events")) || [];
+    events.push(event);
+    localStorage.setItem("events", JSON.stringify(events));
+
+    alert("Event Saved!");
+    displayEvents(); // Refresh events preview
+  } else {
+    alert("Please fill all fields!");
+  }
+}
+
+// Delete Event Function
+function deleteEvent() {
+  const nameToDelete = prompt("Enter the EXACT Event Name to delete:");
+  if (nameToDelete) {
+    let events = JSON.parse(localStorage.getItem("events")) || [];
+    const filteredEvents = events.filter(event => event.name !== nameToDelete);
+
+    if (events.length === filteredEvents.length) {
+      alert("No event found with that name!");
+    } else {
+      localStorage.setItem("events", JSON.stringify(filteredEvents));
+      alert("Event Deleted!");
+      displayEvents(); // Refresh events preview
+    }
+  }
+}
+
+// Display All Events
+function displayEvents() {
+  const container = document.getElementById("eventsContainer");
+  container.innerHTML = "";
+
+  const events = JSON.parse(localStorage.getItem("events")) || [];
+
+  events.forEach(event => {
+    const card = document.createElement("div");
+    card.style.background = "linear-gradient(180deg, #0f0f2c, #000000)";
+    card.style.borderRadius = "20px";
+    card.style.overflow = "hidden";
+    card.style.width = "300px";
+    card.style.paddingBottom = "20px";
+    card.style.textAlign = "center";
+    card.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
+
+    card.innerHTML = `
+      <img src="${event.image}" style="width: 100%; height: 200px; object-fit: cover;">
+      <h2 style="color: white; margin: 15px 0;">${event.name}</h2>
+      <button onclick="alert('${event.description}')" style="margin-right: 10px; background-color: #5c6bff; color: white; border: none; padding: 10px 20px; border-radius: 20px;">Description</button>
+      <button onclick="alert('${event.rules}')" style="background-color: #b485f2; color: white; border: none; padding: 10px 20px; border-radius: 20px;">Rules</button>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// Call displayEvents() when page loads
+window.onload = displayEvents;
+</script>
+</body>
